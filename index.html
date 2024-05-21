@@ -10,27 +10,52 @@
     <style>
         body {
             margin-bottom: 70px; /* Para ajustar o espaço do rodapé */
+            background-color: #f0f0f0; /* Cor de fundo */
+        }
+        h1 {
+            color: #333; /* Cor do texto do título */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra do texto */
+            font-size: 24px; /* Tamanho da fonte do título */
+        }
+        .form-group label {
+            color: #555; /* Cor do texto do rótulo do formulário */
+            font-size: 16px; /* Tamanho da fonte do rótulo do formulário */
+        }
+        .form-control {
+            font-size: 16px; /* Tamanho da fonte da caixa de texto */
+        }
+        .btn-primary {
+            background-color: #007bff; /* Cor de fundo do botão */
+            border-color: #007bff; /* Cor da borda do botão */
+            font-size: 16px; /* Tamanho da fonte do botão */
+        }
+        .footer {
+            background-color: #343a40; /* Cor de fundo do rodapé */
+            color: #fff; /* Cor do texto do rodapé */
+        }
+        .footer a {
+            color: #fff; /* Cor do link no rodapé */
         }
     </style>
 </head>
 <body>
     <div class="container mt-5">
         <!-- Título da aplicação -->
-        <h1>Divisor de Arquivo Excel</h1>
+        <h1 class="text-center mb-4">Divisor de Arquivo Excel</h1>
         <!-- Formulário para inserir o número de linhas por arquivo -->
         <div class="form-group">
             <label for="num-linhas">Número de linhas por arquivo:</label>
             <input type="number" id="num-linhas" class="form-control" min="1" value="999">
         </div>
         <!-- Botão para selecionar o arquivo Excel -->
-        <button id="select-file" class="btn btn-primary">Selecionar Arquivo Excel</button>
+        <button id="select-file" class="btn btn-primary btn-block">Selecionar Arquivo Excel</button>
     </div>
 
     <!-- Rodapé -->
     <footer class="footer fixed-bottom py-3">
         <div class="container text-center">
             <!-- Link para o LinkedIn do desenvolvedor -->
-            <span class="text-muted">Conheça o desenvolvedor: <a href="https://www.linkedin.com/in/gleisonamorim/">Gleison Amorim</a></span>
+            <span>Conheça o desenvolvedor: <a href="https://www.linkedin.com/in/gleisonamorim/">Gleison Amorim</a></span>
         </div>
     </footer>
 
@@ -118,7 +143,7 @@
             return buf;
         }
     </script>
-    <!-- Script para rastreamento de insights OPCIONAL-->
+    <!-- Script para rastreamento de insights -->
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
       </script>
