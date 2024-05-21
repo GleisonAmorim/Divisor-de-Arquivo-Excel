@@ -96,15 +96,14 @@
                         let totalLinhas = json.length;
                         let numPedaços = Math.ceil(totalLinhas / numLinhas);
                         let i = 0;
-                        // Utilizando um intervalo para gerar um arquivo a cada meio segundo
-                        let interval = setInterval(function() {
+                        // Utilizando uma função recursiva para baixar um arquivo por vez
+                        function baixarArquivos() {
                             if (i >= numPedaços) {
-                                clearInterval(interval);
                                 alert(`Arquivo dividido em ${numPedaços} partes.`);
                                 return;
                             }
                             let inicio = i * numLinhas;
-                            let fim = Math.min((i + 1) * numLinhas, totalLinhas);
+                            let fim = Math.min((i + numLinhas), totalLinhas);
                             let dadosPedaço = json.slice(inicio, fim);
                             dadosPedaço.unshift(header); // Incluindo o cabeçalho nas linhas de dados
                             let novoWorkbook = XLSX.utils.book_new();
@@ -120,33 +119,38 @@
                             link.click();
                             document.body.removeChild(link);
                             i++;
-                        }, 500); // Meio segundo de atraso -- Sem isso o programa roda muito rápido e compromete a quantidade de planilhas.
-                    } catch (error) {
-                        console.error("Erro ao processar o arquivo:", error);
-                        alert('Ocorreu um erro ao processar o arquivo. Verifique se o arquivo está correto.');
-                    }
-                };
-                reader.onerror = function(error) {
-                    console.error("Erro ao ler o arquivo:", error);
-                    alert('Ocorreu um erro ao ler o arquivo. Tente novamente.');
-                };
-                reader.readAsArrayBuffer(file);
-            };
-            fileInput.click();
-        });
-    
-        // Função auxiliar para converter string para array buffer
-        function s2ab(s) {
-            var buf = new ArrayBuffer(s.length);
-            var view = new Uint8Array(buf);
-            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-            return buf;
-        }
-    </script>
-    <!-- Script para rastreamento de insights -->
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-      </script>
-      <script defer src="/_vercel/insights/script.js"></script>
-</body>
-</html>
+                            // Chamada recursiva para baixar o próximo arquivo após 1 segundo
+                            setTimeout(baixarArquivos, 1000);
+                            }
+                            // Iniciar o processo de baixar arquivos
+                            baixarArquivos();
+                            } catch (error) {
+                            console.error("Erro ao processar o arquivo:", error);
+                            alert('Ocorreu um erro ao processar o arquivo. Verifique se o arquivo está correto.');
+                            }
+                            };
+                            reader.onerror = function(error) {
+                            console.error("Erro ao ler o arquivo:", error);
+                            alert('Ocorreu um erro ao ler o arquivo. Tente novamente.');
+                            };
+                            reader.readAsArrayBuffer(file);
+                            };
+                            fileInput.click();
+                            });
+                            
+                            // Função auxiliar para converter string para array buffer
+                            function s2ab(s) {
+                            var buf = new ArrayBuffer(s.length);
+                            var view = new Uint8Array(buf);
+                            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                            return buf;
+                            }
+                            
+                             </script>
+                             <!-- Script para rastreamento de insights -->
+                             <script>
+                                 window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+                               </script>
+                               <script defer src="/_vercel/insights/script.js"></script>
+                            </body>
+                            </html>
