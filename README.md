@@ -4,6 +4,8 @@ Um projeto criado para automatizar a divisão de arquivos Excel extensos em part
 Inicialmente desenvolvido em Python e posteriormente convertido para HTML e JavaScript, o programa permite que o usuário escolha o número de linhas por arquivo e selecione o arquivo a ser dividido. 
 Isso simplifica o processamento de conjuntos de dados volumosos, economizando tempo e esforço no ambiente de trabalho quando se faz necessário dividir arquivos grandes em arquivos menores.
 
+### A documentação completa está no arquivo Divisor de Arquivo Excel.docx
+
 ### Funcionalidades
 - Divide arquivos Excel em partes menores com base no número de linhas especificado.
 - Suporta formatos de arquivo .xlsx e .xls.
