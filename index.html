@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisor de Arquivo Excel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin-bottom: 70px; /* Para ajustar o espaço do rodapé */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Divisor de Arquivo Excel</h1>
+        <div class="form-group">
+            <label for="num-linhas">Número de linhas por arquivo:</label>
+            <input type="number" id="num-linhas" class="form-control" min="1" value="999">
+        </div>
+        <button id="select-file" class="btn btn-primary">Selecionar Arquivo Excel</button>
+    </div>
+
+    <footer class="footer fixed-bottom py-3">
+        <div class="container text-center">
+            <span class="text-muted">Conheça o desenvolvedor: <a href="https://www.linkedin.com/in/gleisonamorim/">Gleison Amorim</a></span>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        document.getElementById('select-file').addEventListener('click', function() {
+            let numLinhas = parseInt(document.getElementById('num-linhas').value);
+            if (isNaN(numLinhas) || numLinhas < 1) {
+                alert("Por favor, insira um número válido de linhas por arquivo.");
+                return;
+            }
+    
+            let fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.xlsx, .xls';
+            fileInput.onchange = function(event) {
+                let file = event.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        let data = new Uint8Array(e.target.result);
+                        let workbook = XLSX.read(data, {type: 'array'});
+                        if (workbook.SheetNames.length === 0) {
+                            throw new Error("Nenhuma planilha encontrada no arquivo.");
+                        }
+                        let sheetName = workbook.SheetNames[0];
+                        let worksheet = workbook.Sheets[sheetName];
+                        let json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                        let header = json[0]; // Pegando o cabeçalho
+                        json.shift(); // Removendo o cabeçalho das linhas de dados
+                        let totalLinhas = json.length;
+                        let numPedaços = Math.ceil(totalLinhas / numLinhas);
+                        let i = 0;
+                        let interval = setInterval(function() {
+                            if (i >= numPedaços) {
+                                clearInterval(interval);
+                                alert(`Arquivo dividido em ${numPedaços} partes.`);
+                                return;
+                            }
+                            let inicio = i * numLinhas;
+                            let fim = Math.min((i + 1) * numLinhas, totalLinhas);
+                            let dadosPedaço = json.slice(inicio, fim);
+                            dadosPedaço.unshift(header); // Incluindo o cabeçalho nas linhas de dados
+                            let novoWorkbook = XLSX.utils.book_new();
+                            let novoWorksheet = XLSX.utils.aoa_to_sheet(dadosPedaço);
+                            XLSX.utils.book_append_sheet(novoWorkbook, novoWorksheet, 'Sheet1');
+                            let nomeArquivo = `Arquivo_particionado_${i + 1}.xlsx`;
+                            let blob = new Blob([s2ab(XLSX.write(novoWorkbook, {bookType: 'xlsx', type: 'binary'}))], {type: "application/octet-stream"});
+                            let url = URL.createObjectURL(blob);
+                            let link = document.createElement('a');
+                            link.href = url;
+                            link.download = nomeArquivo;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            i++;
+                        }, 500); // Meio segundo de atraso
+                    } catch (error) {
+                        console.error("Erro ao processar o arquivo:", error);
+                        alert('Ocorreu um erro ao processar o arquivo. Verifique se o arquivo está correto.');
+                    }
+                };
+                reader.onerror = function(error) {
+                    console.error("Erro ao ler o arquivo:", error);
+                    alert('Ocorreu um erro ao ler o arquivo. Tente novamente.');
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            fileInput.click();
+        });
+    
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+    </script>
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+      </script>
+      <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
