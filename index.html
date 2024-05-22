@@ -6,37 +6,8 @@
     <title>Divisor de Arquivo Excel</title>
     <!-- Incluindo o Bootstrap para estilização -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Estilos personalizados -->
-    <style>
-        body {
-            margin-bottom: 70px; /* Para ajustar o espaço do rodapé */
-            background-color: #f0f0f0; /* Cor de fundo */
-        }
-        h1 {
-            color: #333; /* Cor do texto do título */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra do texto */
-            font-size: 24px; /* Tamanho da fonte do título */
-        }
-        .form-group label {
-            color: #555; /* Cor do texto do rótulo do formulário */
-            font-size: 16px; /* Tamanho da fonte do rótulo do formulário */
-        }
-        .form-control {
-            font-size: 16px; /* Tamanho da fonte da caixa de texto */
-        }
-        .btn-primary {
-            background-color: #007bff; /* Cor de fundo do botão */
-            border-color: #007bff; /* Cor da borda do botão */
-            font-size: 16px; /* Tamanho da fonte do botão */
-        }
-        .footer {
-            background-color: #343a40; /* Cor de fundo do rodapé */
-            color: #fff; /* Cor do texto do rodapé */
-        }
-        .footer a {
-            color: #fff; /* Cor do link no rodapé */
-        }
-    </style>
+    <!-- Incluindo o CSS personalizado -->
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
@@ -50,7 +21,6 @@
         <!-- Botão para selecionar o arquivo Excel -->
         <button id="select-file" class="btn btn-primary btn-block">Selecionar Arquivo Excel</button>
     </div>
-
     <!-- Rodapé -->
     <footer class="footer fixed-bottom py-3">
         <div class="container text-center">
@@ -58,95 +28,14 @@
             <span>Conheça o desenvolvedor: <a href="https://www.linkedin.com/in/gleisonamorim/">Gleison Amorim</a></span>
         </div>
     </footer>
-
-    <!-- Biblioteca para manipulação de arquivos Excel -->
+    <!-- Incluindo a biblioteca XLSX -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script>
-        // Event listener para o botão "Selecionar Arquivo Excel"
-        document.getElementById('select-file').addEventListener('click', function() {
-            // Obtendo o número de linhas por arquivo inserido pelo usuário
-            let numLinhas = parseInt(document.getElementById('num-linhas').value);
-            // Verificando se o número de linhas é válido
-            if (isNaN(numLinhas) || numLinhas < 1) {
-                alert("Por favor, insira um número válido de linhas por arquivo.");
-                return;
-            }
-    
-            // Criando um input de arquivo para selecionar o arquivo Excel
-            let fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = '.xlsx, .xls';
-            fileInput.onchange = function(event) {
-                let file = event.target.files[0];
-                if (!file) return;
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        let data = new Uint8Array(e.target.result);
-                        // Lendo o arquivo Excel
-                        let workbook = XLSX.read(data, {type: 'array'});
-                        if (workbook.SheetNames.length === 0) {
-                            throw new Error("Nenhuma planilha encontrada no arquivo.");
-                        }
-                        let sheetName = workbook.SheetNames[0];
-                        let worksheet = workbook.Sheets[sheetName];
-                        let json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                        let header = json[0]; // Pegando o cabeçalho
-                        json.shift(); // Removendo o cabeçalho das linhas de dados
-                        let totalLinhas = json.length;
-                        let numPedaços = Math.ceil(totalLinhas / numLinhas);
-                        let i = 0;
-                        // Utilizando um intervalo para gerar um arquivo
-                        let interval = setInterval(function() {
-                            if (i >= numPedaços) {
-                                clearInterval(interval);
-                                alert(`Arquivo dividido em ${numPedaços} partes.`);
-                                return;
-                            }
-                            let inicio = i * numLinhas;
-                            let fim = Math.min((i + 1) * numLinhas, totalLinhas);
-                            let dadosPedaço = json.slice(inicio, fim);
-                            dadosPedaço.unshift(header); // Incluindo o cabeçalho nas linhas de dados
-                            let novoWorkbook = XLSX.utils.book_new();
-                            let novoWorksheet = XLSX.utils.aoa_to_sheet(dadosPedaço);
-                            XLSX.utils.book_append_sheet(novoWorkbook, novoWorksheet, 'Sheet1');
-                            let nomeArquivo = `Arquivo_particionado_${i + 1}.xlsx`;
-                            let blob = new Blob([s2ab(XLSX.write(novoWorkbook, {bookType: 'xlsx', type: 'binary'}))], {type: "application/octet-stream"});
-                            let url = URL.createObjectURL(blob);
-                            let link = document.createElement('a');
-                            link.href = url;
-                            link.download = nomeArquivo;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            i++;
-                        }, 1000); // Um segundo de atraso -- Sem isso o programa roda muito rápido e compromete a quantidade de planilhas.
-                    } catch (error) {
-                        console.error("Erro ao processar o arquivo:", error);
-                        alert('Ocorreu um erro ao processar o arquivo. Verifique se o arquivo está correto.');
-                    }
-                };
-                reader.onerror = function(error) {
-                    console.error("Erro ao ler o arquivo:", error);
-                    alert('Ocorreu um erro ao ler o arquivo. Tente novamente.');
-                };
-                reader.readAsArrayBuffer(file);
-            };
-            fileInput.click();
-        });
-    
-        // Função auxiliar para converter string para array buffer
-        function s2ab(s) {
-            var buf = new ArrayBuffer(s.length);
-            var view = new Uint8Array(buf);
-            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-            return buf;
-        }
-    </script>
+    <!-- Incluindo o JavaScript personalizado -->
+    <script src="script.js"></script>
     <!-- Script para rastreamento de insights -->
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-      </script>
-      <script defer src="/_vercel/insights/script.js"></script>
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
