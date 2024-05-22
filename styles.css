@@ -1,0 +1,28 @@
+body {
+    margin-bottom: 70px; /* Para ajustar o espaço do rodapé */
+    background-color: #f0f0f0; /* Cor de fundo */
+}
+h1 {
+    color: #333; /* Cor do texto do título */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra do texto */
+    font-size: 24px; /* Tamanho da fonte do título */
+}
+.form-group label {
+    color: #555; /* Cor do texto do rótulo do formulário */
+    font-size: 16px; /* Tamanho da fonte do rótulo do formulário */
+}
+.form-control {
+    font-size: 16px; /* Tamanho da fonte da caixa de texto */
+}
+.btn-primary {
+    background-color: #007bff; /* Cor de fundo do botão */
+    border-color: #007bff; /* Cor da borda do botão */
+    font-size: 16px; /* Tamanho da fonte do botão */
+}
+.footer {
+    background-color: #343a40; /* Cor de fundo do rodapé */
+    color: #fff; /* Cor do texto do rodapé */
+}
+.footer a {
+    color: #fff; /* Cor do link no rodapé */
+}
