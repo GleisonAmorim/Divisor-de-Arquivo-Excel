@@ -1,5 +1,7 @@
 # Divisor de Arquivo Excel
 
+![image](https://github.com/GleisonAmorim/Divisor-de-Arquivo-Excel/assets/54336609/3abe3ac9-b4c1-4558-9a60-2a3b5c7e1dac)
+
 Um projeto criado para automatizar a divisão de arquivos Excel extensos em partes menores. 
 Inicialmente desenvolvido em Python e posteriormente convertido para HTML e JavaScript, o programa permite que o usuário escolha o número de linhas por arquivo e selecione o arquivo a ser dividido. 
 Isso simplifica o processamento de conjuntos de dados volumosos, economizando tempo e esforço no ambiente de trabalho quando se faz necessário dividir arquivos grandes em arquivos menores.
